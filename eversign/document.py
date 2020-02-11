@@ -192,6 +192,7 @@ class DocumentModel(Model):
     expires = TimestampType()
     meta = DictType(StringType)
     embedded_signing_enabled = BoolIntType()
+    embedded_claim_url = StringType()
 
     class Options:
         serialize_when_none = False
