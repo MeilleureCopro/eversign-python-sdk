@@ -24,6 +24,7 @@ class RecipientModel(Model):
     role = StringType()
     message = StringType()
     required = BoolIntType()
+    language = StringType()
 
     class Options:
         serialize_when_none = False
