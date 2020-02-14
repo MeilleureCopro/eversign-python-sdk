@@ -374,6 +374,26 @@ class Client(object):
             'audit_trail': audit_trail
         })
 
+    def get_final_document_content(self, document, audit_trail=1):
+        """
+        Documentation: https://eversign.com/api/documentation/methods#download-final-pdf
+
+        Get content of the final signed PDF.
+
+        Args:
+            document (eversign.Document)
+            audit_trail (int, optional): Defaults to 1.
+
+        Returns:
+            True for success, raises exception on failure.
+        """
+        params = {
+            'business_id': self.business_id,
+            'document_hash': self._get_document_hash(document),
+            'audit_trail': audit_trail
+        }
+        return self._get_file_content('/download_final_document', params=params)
+
     def download_raw_document_to_path(self, document, path):
         """
         Documentation: https://eversign.com/api/documentation/methods#download-original-pdf
@@ -461,6 +481,21 @@ class Client(object):
             params['access_key'] = self.access_key
             url = self.api_base + url + '?' + uparse.urlencode(params)
             urequest.urlretrieve(url, path)
+        except Exception:
+            raise
+
+    def _get_file_content(self, url, params):
+        try:
+            import urllib.parse as uparse
+            import urllib.request as urequest
+        except ImportError:
+            import urllib as uparse
+            import urllib as urequest
+        try:
+            params['access_key'] = self.access_key
+            url = self.api_base + url + '?' + uparse.urlencode(params)
+            r = requests.get(url, allow_redirects=True)
+            return r.content
         except Exception:
             raise
 
